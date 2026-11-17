@@ -1,0 +1,37 @@
+# Local development: starts MySQL and the backend together.
+#   docker compose up --build
+# API is then available at http://localhost:8080/api
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: showzo
+      MYSQL_USER: showzo
+      MYSQL_PASSWORD: showzo
+      MYSQL_ROOT_PASSWORD: showzo-root
+    ports:
+      - "3307:3306"
+    volumes:
+      - showzo-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ushowzo", "-pshowzo"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://db:3306/showzo?serverTimezone=Asia/Kolkata
+      DB_USERNAME: showzo
+      DB_PASSWORD: showzo
+      JWT_SECRET: ${JWT_SECRET:-local-dev-secret-change-me-please-0123456789}
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8080:8080"
+
+volumes:
+  showzo-db:

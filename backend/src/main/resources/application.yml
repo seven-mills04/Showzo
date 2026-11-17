@@ -1,0 +1,28 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: showzo
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/showzo?createDatabaseIfNotExist=true&serverTimezone=Asia/Kolkata}
+    username: ${DB_USERNAME:showzo}
+    password: ${DB_PASSWORD:showzo}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Kolkata
+
+showzo:
+  jwt:
+    # Must be at least 32 characters. Always override in production.
+    secret: ${JWT_SECRET:local-dev-secret-change-me-please-0123456789}
+    expiry-hours: 72
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+  shows:
+    days-ahead: 7
