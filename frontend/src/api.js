@@ -70,6 +70,7 @@ const query = (params) => {
 };
 
 export const api = {
+  health: () => request('GET', '/api/health'),
   cities: () => request('GET', '/api/cities'),
   movies: (city, filters = {}) => request('GET', `/api/movies?${query({ city, ...filters })}`),
   comingSoon: () => request('GET', '/api/movies/coming-soon'),

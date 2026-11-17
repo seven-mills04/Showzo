@@ -3,6 +3,7 @@ import { Box, CircularProgress } from '@mui/material';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WakeNotice from './components/WakeNotice';
 import Home from './pages/Home';
 import MoviePage from './pages/MoviePage';
 import SeatsPage from './pages/SeatsPage';
@@ -32,6 +33,7 @@ function Private({ children }) {
 export default function App() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'clip' }}>
+      <WakeNotice />
       <Header />
       <Box component="main" sx={{ flex: 1 }}>
         <Routes>

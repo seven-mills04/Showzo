@@ -1,0 +1,28 @@
+# Render blueprint: one free web service running the Spring Boot API from backend/Dockerfile.
+# Values marked "sync: false" are secrets. They are typed into the Render dashboard, never stored in this repo.
+services:
+  - type: web
+    name: showzo-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # TiDB Cloud (MySQL-compatible). Example:
+      # jdbc:mysql://<host>:4000/showzo?createDatabaseIfNotExist=true&sslMode=VERIFY_IDENTITY
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      # The website's address. Updated once the frontend is deployed.
+      - key: CORS_ORIGINS
+        value: http://localhost:5173
+      # Razorpay test keys (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET) are optional and are added
+      # by hand on the service's Environment page. Without them the demo payment step is used.

@@ -13,7 +13,7 @@ A movie ticket booking app: pick a city, browse what's playing, choose a show, s
 | Seat map with seat locking | Done |
 | Checkout (Razorpay test mode), tickets with QR, my bookings | Done |
 | React frontend | Done |
-| Deployment | Next |
+| Deployment (Render + TiDB Cloud + Vercel) | In progress |
 
 ## Run locally
 
