@@ -2,6 +2,11 @@
 
 A movie ticket booking app: pick a city, browse what's playing, choose a show, select seats and pay.
 
+**Live:** https://showzo-chi.vercel.app
+**API:** https://showzo-api-gtl4.onrender.com/api/health
+
+The API runs on a free plan that sleeps when idle, so the first visit after a quiet spell can take up to a minute while it wakes up. The site shows a notice while that happens.
+
 **Stack:** Java 21, Spring Boot 3, Spring Data JPA, MySQL 8, Spring Security with JWT, React + Vite + MUI, Docker Compose, GitHub Actions.
 
 ## Status
@@ -13,7 +18,7 @@ A movie ticket booking app: pick a city, browse what's playing, choose a show, s
 | Seat map with seat locking | Done |
 | Checkout (Razorpay test mode), tickets with QR, my bookings | Done |
 | React frontend | Done |
-| Deployment (Render + TiDB Cloud + Vercel) | In progress |
+| Deployment (Render + TiDB Cloud + Vercel) | Done |
 
 ## Run locally
 
@@ -94,6 +99,18 @@ frontend/src
   context.jsx  logged-in user and chosen city
   theme.js     colours and fonts
 ```
+
+## Deployment
+
+| Part | Where | Notes |
+| --- | --- | --- |
+| Website | Vercel | Builds `frontend/` on every push to `main`. `VITE_API_URL` points at the API. |
+| API | Render (free web service, Singapore) | Built from `backend/Dockerfile` using `render.yaml`. Redeploys on every push to `main`. |
+| Database | TiDB Cloud Starter (Singapore) | MySQL-compatible. Free plan with a $0 spending limit. |
+
+Settings on Render (Environment page): `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `CORS_ORIGINS`, and optionally `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`. None of these are stored in the repo.
+
+The seat-locking race (eight people requesting one seat at once) was also run against the live TiDB database: one request won and seven were rejected.
 
 ## Tests
 
