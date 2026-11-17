@@ -26,3 +26,7 @@ showzo:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
   shows:
     days-ahead: 7
+  booking:
+    # How long selected seats stay reserved while the user pays.
+    hold-minutes: 8
+    max-seats: 10
