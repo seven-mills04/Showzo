@@ -11,8 +11,9 @@ A movie ticket booking app: pick a city, browse what's playing, choose a show, s
 | Catalogue API (cities, movies, theatres, shows) | Done |
 | Sign-up and login (JWT) | Done |
 | Seat map with seat locking | Done |
-| Checkout (Razorpay test mode) and tickets | Next |
-| React frontend | Planned |
+| Checkout (Razorpay test mode), tickets with QR, my bookings | Done |
+| React frontend | Done |
+| Deployment | Next |
 
 ## Run locally
 
@@ -22,7 +23,15 @@ Requires Docker Desktop.
 docker compose up --build
 ```
 
-The API starts on http://localhost:8080 and seeds itself with demo cities, theatres, movies and a week of shows. All movie titles and theatre names are invented.
+Then, in a second terminal, start the website:
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173. The API runs on http://localhost:8080 and seeds itself with demo cities, theatres, movies and a week of shows. All movie titles and theatre names are invented.
 
 ## API
 
@@ -39,6 +48,20 @@ The API starts on http://localhost:8080 and seeds itself with demo cities, theat
 | GET | `/api/shows/{id}/seats` | Seat map of a show with prices and each seat's status |
 | POST | `/api/shows/{id}/holds` | Holds seats for 8 minutes. Body: `{"seats": ["C4", "C5"]}` (login needed) |
 | DELETE | `/api/shows/{id}/holds` | Releases your held seats (login needed) |
+| POST | `/api/shows/{id}/checkout` | Prices your held seats and creates a payment order (login needed) |
+| POST | `/api/bookings/{id}/confirm` | Verifies the payment and books the seats (login needed) |
+| GET | `/api/bookings` | Your confirmed bookings (login needed) |
+| GET | `/api/bookings/{id}` | One of your bookings (login needed) |
+
+## Payments
+
+Set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` (test-mode keys) to pay through Razorpay's checkout popup. Never commit these keys.
+
+1. The server works out the amount from the held seats and creates a Razorpay order.
+2. The browser pays inside Razorpay's popup and gets back a payment id and a signature.
+3. The server recomputes the signature (HMAC-SHA256 of `order_id|payment_id` with the secret key). The seats are booked only if it matches, so a made-up "payment succeeded" message from the browser books nothing.
+
+Without the keys the app runs in demo mode: the pay button opens a clearly labelled practice step and no money moves.
 
 ## How seat locking works
 
@@ -57,11 +80,19 @@ Two people can open the same show and click the same seat at the same moment. On
 ```
 backend/src/main/java/com/showzo
   catalogue/   cities, movies, theatres, screens, shows
-  booking/     seat map, seat holds and their expiry
+  booking/     seat map, seat holds, checkout and bookings
+  payment/     Razorpay gateway and the keyless demo gateway
   auth/        registration, login, JWT filter, security rules
   user/        user accounts
   seed/        demo data and the daily show planner
   common/      error handling and shared config
+
+frontend/src
+  pages/       one file per screen (home, movie, seats, checkout, ticket, bookings, sign in)
+  components/  header, footer, poster artwork, movie card, ticket
+  api.js       every call to the backend
+  context.jsx  logged-in user and chosen city
+  theme.js     colours and fonts
 ```
 
 ## Tests
