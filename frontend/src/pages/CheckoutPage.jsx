@@ -104,7 +104,7 @@ export default function CheckoutPage() {
         name: 'Showzo',
         description: `${show.movieTitle} · ${order.seats.join(', ')}`,
         prefill: { name: user.name, email: user.email },
-        theme: { color: colors.accent },
+        theme: { color: colors.text },
         handler: (result) => finish({
           orderId: result.razorpay_order_id,
           paymentId: result.razorpay_payment_id,
@@ -145,8 +145,8 @@ export default function CheckoutPage() {
 
       <Box sx={{
         mt: 2, px: 2, py: 1.25, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1,
-        bgcolor: expired ? 'rgba(255,107,87,0.12)' : 'rgba(255,197,49,0.1)',
-        color: expired ? colors.danger : colors.accent, fontWeight: 700,
+        bgcolor: expired ? 'rgba(217,45,16,0.1)' : colors.accent,
+        color: expired ? colors.danger : colors.accentInk, fontWeight: 700,
       }} role="status">
         <TimerOutlined fontSize="small" />
         {expired ? 'Your seat hold has ended.' : `Seats held for ${minutes}:${seconds}`}

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { display } from '../theme';
+import { colors, label, shout } from '../theme';
 
 // Posters are drawn in the browser from the movie's colour and title, so the app needs no image files.
 // The title decides which of three patterns is used, so a movie always gets the same artwork.
@@ -10,7 +10,7 @@ const patternFor = (text) => {
 };
 
 function Pattern({ kind }) {
-  const stroke = 'rgba(255,255,255,0.16)';
+  const stroke = 'rgba(255,255,255,0.2)';
   if (kind === 0) {
     return (
       <g fill="none" stroke={stroke} strokeWidth="1.5">
@@ -27,7 +27,7 @@ function Pattern({ kind }) {
   }
   return (
     <g>
-      <circle cx="100" cy="118" r="62" fill="rgba(255,255,255,0.2)" />
+      <circle cx="100" cy="112" r="64" fill="rgba(255,255,255,0.24)" />
       <g stroke={stroke} strokeWidth="2">
         {[150, 166, 182, 198, 214].map((y) => <line key={y} x1="0" y1={y} x2="200" y2={y} />)}
       </g>
@@ -37,35 +37,31 @@ function Pattern({ kind }) {
 
 export default function Poster({ movie, size = 'md', sx }) {
   const color = movie.accentColor || '#444';
-  const titleSize = { sm: 15, md: 21, lg: 30 }[size];
+  const titleSize = { sm: 14, md: 22, lg: 34 }[size];
 
   return (
     <Box
       sx={{
-        position: 'relative', aspectRatio: '2 / 3', borderRadius: 2, overflow: 'hidden',
-        background: `linear-gradient(165deg, color-mix(in srgb, ${color} 80%, #fff) 0%, ${color} 38%, color-mix(in srgb, ${color} 35%, #000) 100%)`,
-        boxShadow: '0 18px 40px -18px rgba(0,0,0,0.9)',
+        position: 'relative', aspectRatio: '2 / 3', borderRadius: 1, overflow: 'hidden',
+        border: `1.5px solid ${colors.text}`,
+        background: `linear-gradient(165deg, color-mix(in srgb, ${color} 78%, #fff) 0%, ${color} 40%, color-mix(in srgb, ${color} 40%, #000) 100%)`,
         ...sx,
       }}>
       <Box component="svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice" aria-hidden
         sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
         <Pattern kind={patternFor(movie.title)} />
       </Box>
-      <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.55) 100%)' }} />
-      <Box
-        sx={{
-          position: 'absolute', top: 12, left: 12, px: 0.9, py: 0.2, borderRadius: 0.75,
-          fontSize: 10.5, fontWeight: 800, letterSpacing: '0.06em',
-          bgcolor: 'rgba(0,0,0,0.35)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)',
-        }}>
+      <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%)' }} />
+      <Box sx={{
+        ...label, position: 'absolute', top: 10, left: 10, px: 0.8, py: 0.15, borderRadius: 999,
+        fontSize: 10, bgcolor: colors.bg, color: colors.text, border: `1.5px solid ${colors.text}`,
+      }}>
         {movie.certificate}
       </Box>
-      <Box
-        sx={{
-          position: 'absolute', left: 14, right: 14, bottom: 14, color: '#fff',
-          fontFamily: display, fontWeight: 800, fontSize: titleSize, lineHeight: 1.02,
-          letterSpacing: '-0.03em', textWrap: 'balance', textShadow: '0 2px 14px rgba(0,0,0,0.35)',
-        }}>
+      <Box sx={{
+        ...shout, position: 'absolute', left: 12, right: 12, bottom: 12, color: '#fff',
+        fontSize: titleSize, lineHeight: 0.92, textWrap: 'balance',
+      }}>
         {movie.title}
       </Box>
     </Box>

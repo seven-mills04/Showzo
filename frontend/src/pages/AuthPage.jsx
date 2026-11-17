@@ -73,7 +73,7 @@ export default function AuthPage({ mode }) {
 
       <Typography sx={{ mt: 3, textAlign: 'center' }} color="text.secondary">
         {signUp ? 'Already have an account? ' : 'New to Showzo? '}
-        <Box component={Link} to={`${other}?next=${encodeURIComponent(next)}`} sx={{ color: colors.accent, fontWeight: 700 }}>
+        <Box component={Link} to={`${other}?next=${encodeURIComponent(next)}`} sx={{ color: colors.cobalt, fontWeight: 700, textDecoration: 'underline' }}>
           {signUp ? 'Sign in' : 'Create one'}
         </Box>
       </Typography>

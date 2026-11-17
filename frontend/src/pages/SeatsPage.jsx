@@ -21,12 +21,12 @@ function Seat({ seat, selected, onToggle }) {
         all: 'unset', boxSizing: 'border-box', width: { xs: 19, sm: 28, md: 32 }, height: { xs: 19, sm: 28, md: 32 },
         display: 'grid', placeItems: 'center', fontSize: { xs: 8.5, sm: 11 }, fontWeight: 700,
         borderRadius: { xs: '6px 6px 4px 4px', sm: '9px 9px 5px 5px' }, cursor: taken ? 'not-allowed' : 'pointer',
-        border: `1.5px solid ${selected ? colors.accent : taken ? 'transparent' : 'rgba(255,255,255,0.28)'}`,
-        bgcolor: selected ? colors.accent : taken ? 'rgba(255,255,255,0.07)' : 'transparent',
-        color: selected ? colors.accentInk : taken ? 'rgba(255,255,255,0.16)' : colors.muted,
+        border: `1.5px solid ${taken ? 'transparent' : selected ? colors.text : 'rgba(11,11,11,0.45)'}`,
+        bgcolor: selected ? colors.accent : taken ? 'rgba(11,11,11,0.1)' : 'transparent',
+        color: selected ? colors.accentInk : taken ? 'rgba(11,11,11,0.22)' : colors.text,
         transition: 'transform .12s ease, background-color .12s ease, border-color .12s ease',
-        '&:hover:not(:disabled)': { borderColor: colors.accent, color: selected ? colors.accentInk : colors.accent, transform: 'translateY(-2px)' },
-        '&:focus-visible': { outline: `2px solid ${colors.accent}`, outlineOffset: 2 },
+        '&:hover:not(:disabled)': { borderColor: colors.text, bgcolor: colors.accent, transform: 'translateY(-2px)' },
+        '&:focus-visible': { outline: `2px solid ${colors.cobalt}`, outlineOffset: 2 },
       }}>
       {seat.number}
     </Box>
@@ -41,9 +41,9 @@ function Legend() {
   );
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
-      {item('Available', { border: '1.5px solid rgba(255,255,255,0.28)' })}
-      {item('Selected', { bgcolor: colors.accent })}
-      {item('Taken', { bgcolor: 'rgba(255,255,255,0.07)' })}
+      {item('Available', { border: '1.5px solid rgba(11,11,11,0.45)' })}
+      {item('Selected', { bgcolor: colors.accent, border: `1.5px solid ${colors.text}` })}
+      {item('Taken', { bgcolor: 'rgba(11,11,11,0.1)' })}
     </Box>
   );
 }
@@ -159,7 +159,7 @@ export default function SeatsPage() {
                   {newTier && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: index === 0 ? 0 : 3, mb: 1.25 }}>
                       <Typography variant="overline" sx={{ color: colors.text }}>
-                        {TIER_NAMES[row.tier]} <Box component="span" sx={{ color: colors.accent }}>{rupees(row.price)}</Box>
+                        {TIER_NAMES[row.tier]} <Box component="span" sx={{ color: colors.cobalt }}>{rupees(row.price)}</Box>
                       </Typography>
                       <Box sx={{ flex: 1, height: '1px', bgcolor: colors.line }} />
                     </Box>
@@ -179,8 +179,8 @@ export default function SeatsPage() {
             <Box sx={{ mt: 5, mb: 1, mx: 'auto', width: '82%' }}>
               <Box sx={{
                 height: 46, borderRadius: '0 0 50% 50% / 0 0 100% 100%',
-                borderBottom: `3px solid ${colors.accent}`,
-                background: 'linear-gradient(180deg, transparent 0%, rgba(255,197,49,0.16) 100%)',
+                borderBottom: `3px solid ${colors.text}`,
+                background: 'linear-gradient(180deg, transparent 0%, rgba(200,255,46,0.55) 100%)',
               }} />
               <Typography variant="overline" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 1.5 }}>
                 Screen this way
@@ -193,8 +193,8 @@ export default function SeatsPage() {
       </Container>
 
       <Box sx={{
-        position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 15, borderTop: `1px solid ${colors.line}`,
-        bgcolor: 'rgba(22,22,27,0.94)', backdropFilter: 'blur(14px)',
+        position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 15, borderTop: `1.5px solid ${colors.text}`,
+        bgcolor: 'rgba(241,239,232,0.94)', backdropFilter: 'blur(14px)',
       }}>
         <Container maxWidth="lg" sx={{ py: 1.75, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>

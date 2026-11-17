@@ -21,10 +21,10 @@ function DateStrip({ value, onChange }) {
           <Box key={day} component="button" role="tab" aria-selected={active} onClick={() => onChange(day)}
             sx={{
               all: 'unset', cursor: 'pointer', minWidth: 62, py: 1, borderRadius: 2, textAlign: 'center',
-              border: `1px solid ${active ? colors.accent : colors.line}`,
-              bgcolor: active ? colors.accent : 'transparent', color: active ? colors.accentInk : colors.text,
-              transition: 'all .15s ease', '&:hover': { borderColor: colors.accent },
-              '&:focus-visible': { outline: `2px solid ${colors.accent}`, outlineOffset: 2 },
+              border: `1px solid ${colors.text}`,
+              bgcolor: active ? colors.text : 'transparent', color: active ? colors.bg : colors.text,
+              transition: 'all .15s ease', '&:hover': active ? {} : { bgcolor: colors.accent },
+              '&:focus-visible': { outline: `2px solid ${colors.cobalt}`, outlineOffset: 2 },
             }}>
             <Box sx={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', opacity: 0.75 }}>
               {index === 0 ? 'TODAY' : label.weekday.toUpperCase()}
@@ -43,11 +43,11 @@ function ShowPill({ show }) {
     <Tooltip title={`${show.screenName} · from ${rupees(show.basePrice)}`} arrow>
       <Box component={Link} to={`/shows/${show.id}/seats`}
         sx={{
-          px: 2, py: 1, borderRadius: 2, border: `1px solid ${colors.line}`, textAlign: 'center', minWidth: 104,
+          px: 2, py: 1, borderRadius: 2, border: `1px solid ${colors.text}`, textAlign: 'center', minWidth: 104,
           transition: 'all .15s ease',
-          '&:hover, &:focus-visible': { borderColor: colors.accent, bgcolor: 'rgba(255,197,49,0.08)' },
+          '&:hover, &:focus-visible': { bgcolor: colors.accent },
         }}>
-        <Box sx={{ fontWeight: 800, color: colors.accent }}>{clock(show.startTime)}</Box>
+        <Box sx={{ fontWeight: 800 }}>{clock(show.startTime)}</Box>
         <Box sx={{ fontSize: 11.5, color: colors.muted, fontWeight: 600 }}>{show.language} · {show.format}</Box>
       </Box>
     </Tooltip>
@@ -94,7 +94,7 @@ export default function MoviePage() {
             <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 56 }, textWrap: 'balance' }}>{movie.title}</Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mt: 2 }}>
               {!upcoming && (
-                <Chip icon={<StarRounded sx={{ color: `${colors.accent} !important` }} />}
+                <Chip icon={<StarRounded sx={{ color: `${colors.text} !important` }} />}
                   label={`${movie.rating.toFixed(1)} · ${compactVotes(movie.votes)} votes`} />
               )}
               <Chip icon={<AccessTimeRounded />} label={duration(movie.durationMinutes)} variant="outlined" />

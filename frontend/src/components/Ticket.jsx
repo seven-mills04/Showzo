@@ -23,8 +23,8 @@ export default function Ticket({ booking }) {
   const date = dayLabel(booking.startTime);
   return (
     <Box sx={{
-      borderRadius: 4, overflow: 'hidden', bgcolor: colors.surface, border: `1px solid ${colors.line}`,
-      boxShadow: '0 30px 60px -30px rgba(0,0,0,0.9)',
+      borderRadius: 3, overflow: 'hidden', bgcolor: colors.surface,
+      border: `1.5px solid ${colors.text}`, boxShadow: `8px 8px 0 ${colors.text}`,
     }}>
       <Box sx={{
         p: { xs: 2.5, md: 3.5 },
@@ -34,7 +34,7 @@ export default function Ticket({ booking }) {
         <Typography variant="overline" sx={{ opacity: 0.85 }}>
           {booking.language} · {booking.format} · {booking.certificate}
         </Typography>
-        <Typography sx={{ fontFamily: display, fontWeight: 800, fontSize: { xs: 30, md: 40 }, lineHeight: 1.02, letterSpacing: '-0.03em', mt: 0.5, textWrap: 'balance' }}>
+        <Typography sx={{ fontFamily: display, fontWeight: 800, fontSize: { xs: 30, md: 44 }, lineHeight: 0.95, letterSpacing: '-0.045em', textTransform: 'uppercase', mt: 0.5, textWrap: 'balance' }}>
           {booking.movieTitle}
         </Typography>
       </Box>
@@ -50,13 +50,13 @@ export default function Ticket({ booking }) {
       </Box>
 
       <Box sx={{
-        position: 'relative', borderTop: `2px dashed ${colors.line}`,
+        position: 'relative', borderTop: `2px dashed ${colors.text}`,
         '&::before': notch('left'), '&::after': notch('right'),
         p: { xs: 2.5, md: 3.5 }, display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'space-between',
       }}>
         <Box sx={{ minWidth: 0 }}>
           <Typography variant="overline" color="text.secondary">Seats</Typography>
-          <Typography sx={{ fontFamily: display, fontWeight: 800, fontSize: { xs: 26, md: 34 }, lineHeight: 1.1, color: colors.accent }}>
+          <Typography sx={{ fontFamily: display, fontWeight: 800, fontSize: { xs: 26, md: 34 }, lineHeight: 1.1, textTransform: 'uppercase', letterSpacing: '-0.03em' }}>
             {booking.seats.join('  ')}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>

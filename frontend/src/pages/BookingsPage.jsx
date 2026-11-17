@@ -16,7 +16,7 @@ function BookingRow({ booking }) {
         display: 'flex', alignItems: 'center', gap: { xs: 2, md: 3 }, p: { xs: 2, md: 2.5 }, borderRadius: 3,
         bgcolor: colors.surface, border: `1px solid ${colors.line}`, opacity: past ? 0.6 : 1,
         transition: 'border-color .15s ease, transform .15s ease',
-        '&:hover, &:focus-visible': { borderColor: colors.accent, transform: 'translateX(4px)' },
+        '&:hover, &:focus-visible': { borderColor: colors.text, bgcolor: colors.accent, transform: 'translateX(4px)' },
       }}>
       <Box sx={{
         width: 64, flexShrink: 0, textAlign: 'center', py: 1, borderRadius: 2, color: '#fff',
@@ -31,7 +31,7 @@ function BookingRow({ booking }) {
         <Typography variant="body2" color="text.secondary" noWrap>
           {clock(booking.startTime)} · {booking.theatreName}
         </Typography>
-        <Typography variant="body2" sx={{ mt: 0.5, fontWeight: 700, color: colors.accent }}>
+        <Typography variant="body2" sx={{ mt: 0.5, fontWeight: 700, color: colors.cobalt }}>
           {booking.seats.join(', ')}
           <Box component="span" sx={{ color: colors.muted, fontWeight: 500 }}> · {booking.bookingRef}</Box>
         </Typography>

@@ -1,26 +1,40 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  Avatar, Box, Button, Container, Divider, InputBase, ListItemIcon, Menu, MenuItem, Typography,
-} from '@mui/material';
+import { Box, Container, Divider, InputBase, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
 import SearchRounded from '@mui/icons-material/SearchRounded';
-import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
 import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import ConfirmationNumberOutlined from '@mui/icons-material/ConfirmationNumberOutlined';
 import LogoutRounded from '@mui/icons-material/LogoutRounded';
 import CheckRounded from '@mui/icons-material/CheckRounded';
 
-import { colors, display } from '../theme';
+import { colors, label, shout } from '../theme';
 import { useAuth, useCity } from '../context';
 
-export function Logo({ size = 26 }) {
+export function Logo({ size = 24, invert = false }) {
   return (
     <Box component={Link} to="/" aria-label="Showzo home"
-      sx={{ fontFamily: display, fontWeight: 800, fontSize: size, letterSpacing: '-0.05em', lineHeight: 1 }}>
-      show<Box component="span" sx={{ color: colors.accent }}>zo</Box>
+      sx={{ ...shout, fontSize: size, lineHeight: 1, display: 'inline-flex', alignItems: 'center', color: invert ? colors.bg : colors.text }}>
+      Show
+      <Box component="span" sx={{
+        ml: '0.08em', px: '0.16em', pt: '0.04em', borderRadius: '0.22em',
+        bgcolor: colors.accent, color: colors.accentInk, transform: 'rotate(-4deg)', display: 'inline-block',
+      }}>zo</Box>
     </Box>
   );
 }
+
+// The small outlined capsule used for everything in the top bar.
+const pill = {
+  all: 'unset', ...label, boxSizing: 'border-box', fontWeight: 700,
+  display: 'inline-flex', alignItems: 'center', gap: 0.5, height: 32, px: 1.5, borderRadius: 999,
+  border: `1.5px solid ${colors.text}`, cursor: 'pointer', whiteSpace: 'nowrap', color: colors.text,
+  transition: 'background-color .16s ease, color .16s ease',
+  '&:hover': { bgcolor: colors.text, color: colors.bg },
+  '&:focus-visible': { outline: `2px solid ${colors.cobalt}`, outlineOffset: 2 },
+};
+const pillSolid = { ...pill, bgcolor: colors.text, color: colors.bg, '&:hover': { bgcolor: colors.accent, color: colors.accentInk } };
+
+const menuPaper = { sx: { minWidth: 200, mt: 1, border: `1.5px solid ${colors.text}`, boxShadow: `5px 5px 0 ${colors.text}`, borderRadius: 1.5 } };
 
 function SearchBox() {
   const navigate = useNavigate();
@@ -38,13 +52,15 @@ function SearchBox() {
   return (
     <Box component="form" onSubmit={submit}
       sx={{
-        flex: 1, maxWidth: 440, display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1,
-        px: 2, height: 42, borderRadius: 999, bgcolor: colors.surface, border: `1px solid ${colors.line}`,
-        '&:focus-within': { borderColor: colors.accent },
+        display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.75, height: 32, px: 1.5, width: 220,
+        borderRadius: 999, border: `1.5px solid ${colors.text}`,
+        transition: 'width .25s ease, background-color .2s ease',
+        '&:focus-within': { width: 300, bgcolor: colors.surface },
       }}>
-      <SearchRounded sx={{ fontSize: 20, color: colors.muted }} />
-      <InputBase value={text} onChange={(e) => setText(e.target.value)} placeholder="Search movies"
-        inputProps={{ 'aria-label': 'Search movies' }} sx={{ flex: 1, fontSize: 14.5 }} />
+      <SearchRounded sx={{ fontSize: 16 }} />
+      <InputBase value={text} onChange={(e) => setText(e.target.value)} placeholder="SEARCH MOVIES"
+        inputProps={{ 'aria-label': 'Search movies' }}
+        sx={{ flex: 1, ...label, fontSize: 11, fontWeight: 700, '& input': { p: 0, textTransform: 'none', letterSpacing: '0.02em', fontSize: 13, '&::placeholder': { ...label, opacity: 0.6 } } }} />
     </Box>
   );
 }
@@ -55,18 +71,18 @@ function CityMenu() {
 
   return (
     <>
-      <Button onClick={(e) => setAnchor(e.currentTarget)} color="inherit"
-        startIcon={<PlaceOutlined sx={{ color: colors.accent }} />} endIcon={<ExpandMoreRounded />}
-        sx={{ px: 1.5, whiteSpace: 'nowrap' }}>
+      <Box component="button" type="button" onClick={(e) => setAnchor(e.currentTarget)} sx={pill}
+        aria-haspopup="menu" aria-label={`City: ${city.name}. Change city`}>
+        <Box component="span" sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: colors.coral }} />
         {city.name || 'City'}
-      </Button>
-      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)}
-        slotProps={{ paper: { sx: { minWidth: 190, mt: 1, border: `1px solid ${colors.line}` } } }}>
+        <ExpandMoreRounded sx={{ fontSize: 15, mr: -0.5 }} />
+      </Box>
+      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} slotProps={{ paper: menuPaper }}>
         {cities.map((option) => (
           <MenuItem key={option.slug} selected={option.slug === city.slug}
-            onClick={() => { chooseCity(option.slug); setAnchor(null); }}>
+            onClick={() => { chooseCity(option.slug); setAnchor(null); }} sx={{ ...label, fontSize: 12 }}>
             <Box sx={{ flex: 1 }}>{option.name}</Box>
-            {option.slug === city.slug && <CheckRounded sx={{ fontSize: 18, color: colors.accent }} />}
+            {option.slug === city.slug && <CheckRounded sx={{ fontSize: 16 }} />}
           </MenuItem>
         ))}
       </Menu>
@@ -80,30 +96,27 @@ function AccountMenu() {
   const [anchor, setAnchor] = useState(null);
 
   if (!user) {
-    return <Button component={Link} to="/sign-in" variant="contained" size="small" sx={{ py: 0.9 }}>Sign in</Button>;
+    return <Box component={Link} to="/sign-in" sx={pillSolid}>Sign in</Box>;
   }
 
   const go = (path) => { setAnchor(null); navigate(path); };
 
   return (
     <>
-      <Button onClick={(e) => setAnchor(e.currentTarget)} color="inherit" sx={{ px: 1, minWidth: 0, gap: 1 }}>
-        <Avatar sx={{ width: 32, height: 32, bgcolor: colors.accent, color: colors.accentInk, fontWeight: 800, fontSize: 15 }}>
-          {user.name.charAt(0).toUpperCase()}
-        </Avatar>
-        <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>{user.name.split(' ')[0]}</Box>
-      </Button>
-      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)}
-        slotProps={{ paper: { sx: { minWidth: 210, mt: 1, border: `1px solid ${colors.line}` } } }}>
+      <Box component="button" type="button" onClick={(e) => setAnchor(e.currentTarget)} sx={pillSolid} aria-haspopup="menu">
+        {user.name.split(' ')[0]}
+        <ExpandMoreRounded sx={{ fontSize: 15, mr: -0.5 }} />
+      </Box>
+      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} slotProps={{ paper: menuPaper }}>
         <Box sx={{ px: 2, py: 1 }}>
           <Typography fontWeight={700}>{user.name}</Typography>
           <Typography variant="body2" color="text.secondary">{user.email}</Typography>
         </Box>
         <Divider />
-        <MenuItem onClick={() => go('/bookings')}>
+        <MenuItem onClick={() => go('/bookings')} sx={{ ...label, fontSize: 12 }}>
           <ListItemIcon><ConfirmationNumberOutlined fontSize="small" /></ListItemIcon>My bookings
         </MenuItem>
-        <MenuItem onClick={() => { signOut(); go('/'); }}>
+        <MenuItem onClick={() => { signOut(); go('/'); }} sx={{ ...label, fontSize: 12 }}>
           <ListItemIcon><LogoutRounded fontSize="small" /></ListItemIcon>Sign out
         </MenuItem>
       </Menu>
@@ -114,18 +127,13 @@ function AccountMenu() {
 export default function Header() {
   return (
     <Box component="header"
-      sx={{
-        position: 'sticky', top: 0, zIndex: 20, borderBottom: `1px solid ${colors.line}`,
-        bgcolor: 'rgba(13,13,16,0.82)', backdropFilter: 'blur(14px)',
-      }}>
-      <Container maxWidth="lg" sx={{ height: 68, display: 'flex', alignItems: 'center', gap: { xs: 1, md: 3 } }}>
+      sx={{ position: 'sticky', top: 0, zIndex: 20, bgcolor: 'rgba(241,239,232,0.86)', backdropFilter: 'blur(12px)' }}>
+      <Container maxWidth="xl" sx={{ height: 60, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Logo />
+        <Box sx={{ flex: 1 }} />
         <SearchBox />
-        <Box sx={{ flex: { xs: 1, sm: 0 } }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: { sm: 'auto' } }}>
-          <CityMenu />
-          <AccountMenu />
-        </Box>
+        <CityMenu />
+        <AccountMenu />
       </Container>
     </Box>
   );
