@@ -90,6 +90,12 @@ public class SeatReservation {
         return expiresAt;
     }
 
+    /** Turns a hold into a permanent booking once payment is verified. */
+    public void markBooked() {
+        this.status = SeatStatus.BOOKED;
+        this.expiresAt = null;
+    }
+
     public void setExpiresAt(Instant expiresAt) {
         this.expiresAt = expiresAt;
     }

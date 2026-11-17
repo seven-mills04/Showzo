@@ -20,6 +20,8 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
             """)
     List<SeatReservation> findActiveForShow(@Param("showId") Long showId, @Param("now") Instant now);
 
+    List<SeatReservation> findByShowIdAndUserIdAndStatus(Long showId, Long userId, SeatStatus status);
+
     @Modifying
     @Query("""
             delete from SeatReservation r

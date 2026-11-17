@@ -1,5 +1,6 @@
 package com.showzo.common;
 
+import com.showzo.payment.PaymentGatewayException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,6 +37,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> badCredentials(BadCredentialsException ex) {
         return build(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
+    }
+
+    @ExceptionHandler(PaymentGatewayException.class)
+    public ResponseEntity<ApiError> paymentGateway(PaymentGatewayException ex) {
+        return build(HttpStatus.BAD_GATEWAY, "The payment service is not responding. Please try again.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

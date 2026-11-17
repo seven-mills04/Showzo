@@ -30,3 +30,8 @@ showzo:
     # How long selected seats stay reserved while the user pays.
     hold-minutes: 8
     max-seats: 10
+    convenience-fee-per-seat: 30
+  razorpay:
+    # Leave both empty to run with the built-in demo payment step.
+    key-id: ${RAZORPAY_KEY_ID:}
+    key-secret: ${RAZORPAY_KEY_SECRET:}
