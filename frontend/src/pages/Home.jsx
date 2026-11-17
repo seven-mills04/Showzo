@@ -10,6 +10,7 @@ import { colors, label, serif, shout } from '../theme';
 import { compactVotes, dayLabel } from '../format';
 import MovieCard from '../components/MovieCard';
 import Poster from '../components/Poster';
+import { CardStack, Eyebrow, SectionTitle, Spec } from '../components/ui';
 
 const EASE = [0.2, 0.7, 0.2, 1];
 const SLIDE_MS = 5000;
@@ -46,21 +47,6 @@ function Headline() {
 
 /* ---------- Featured film: numbered slides with a spec sheet ---------- */
 
-function Spec({ name, value }) {
-  return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, py: 0.9, borderTop: `1px solid ${colors.text}` }}>
-      <Box sx={{ ...label, color: colors.muted }}>{name}</Box>
-      <Box sx={{ ...label, textAlign: 'right' }}>{value}</Box>
-    </Box>
-  );
-}
-
-const STACK = [
-  { color: colors.coral, transform: 'translate(-7%, 4%) rotate(-7deg)' },
-  { color: colors.cobalt, transform: 'translate(6%, 2%) rotate(5deg)' },
-  { color: colors.accent, transform: 'translate(-2%, -3%) rotate(-2deg)' },
-];
-
 function Featured({ movies, cityName }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -82,10 +68,7 @@ function Featured({ movies, cityName }) {
       }}>
       {/* Left: the film's details */}
       <Box sx={{ order: { xs: 2, md: 1 } }}>
-        <Box sx={{ ...label, display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: colors.coral }} />
-          Top rated in {cityName} this week
-        </Box>
+        <Eyebrow sx={{ mb: 2 }}>Top rated in {cityName} this week</Eyebrow>
         <AnimatePresence mode="wait">
           <Box key={movie.slug} component={motion.div} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -14 }} transition={{ duration: 0.3, ease: EASE }}>
@@ -106,20 +89,16 @@ function Featured({ movies, cityName }) {
       </Box>
 
       {/* Middle: the poster on a stack of coloured cards */}
-      <Box sx={{ order: { xs: 1, md: 2 }, position: 'relative', mx: { xs: 'auto', md: 0 }, width: { xs: '62%', sm: '44%', md: '100%' } }}>
-        {STACK.map((card) => (
-          <Box key={card.color} aria-hidden sx={{
-            position: 'absolute', inset: 0, bgcolor: card.color, border: `1.5px solid ${colors.text}`, borderRadius: 1,
-            transform: card.transform,
-          }} />
-        ))}
-        <AnimatePresence mode="wait">
-          <Box key={movie.slug} component={motion.div} sx={{ position: 'relative' }}
-            initial={{ opacity: 0, rotate: 6, y: 30 }} animate={{ opacity: 1, rotate: 1.5, y: 0 }}
-            exit={{ opacity: 0, rotate: -6, y: -20 }} transition={{ duration: 0.45, ease: EASE }}>
-            <Link to={`/movies/${movie.slug}`} aria-label={`Book ${movie.title}`}><Poster movie={movie} size="lg" /></Link>
-          </Box>
-        </AnimatePresence>
+      <Box sx={{ order: { xs: 1, md: 2 }, mx: { xs: 'auto', md: 0 }, width: { xs: '62%', sm: '44%', md: '100%' } }}>
+        <CardStack>
+          <AnimatePresence mode="wait">
+            <Box key={movie.slug} component={motion.div}
+              initial={{ opacity: 0, rotate: 6, y: 30 }} animate={{ opacity: 1, rotate: 1.5, y: 0 }}
+              exit={{ opacity: 0, rotate: -6, y: -20 }} transition={{ duration: 0.45, ease: EASE }}>
+              <Link to={`/movies/${movie.slug}`} aria-label={`Book ${movie.title}`}><Poster movie={movie} size="lg" /></Link>
+            </Box>
+          </AnimatePresence>
+        </CardStack>
       </Box>
 
       {/* Right: slide numbers */}
@@ -171,18 +150,6 @@ function Marquee({ items }) {
       }}>
         {[0, 1, 2].map(run)}
       </Box>
-    </Box>
-  );
-}
-
-/* ---------- Section heading: bold word + italic word ---------- */
-
-function SectionTitle({ bold, italic, count }) {
-  return (
-    <Box component="h2" sx={{ ...shout, m: 0, fontSize: 'clamp(44px, 8vw, 132px)', display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', columnGap: '0.18em' }}>
-      {bold}
-      <Box component="span" sx={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, textTransform: 'none', letterSpacing: '-0.03em' }}>{italic}</Box>
-      {count != null && <Box component="sup" sx={{ ...label, fontSize: { xs: 12, md: 16 }, mt: '0.6em' }}>({count})</Box>}
     </Box>
   );
 }

@@ -1,42 +1,48 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Box, Button, Container, Skeleton, Typography } from '@mui/material';
-import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
+import { Alert, Box, Button, Container, Skeleton } from '@mui/material';
+import ArrowOutwardRounded from '@mui/icons-material/ArrowOutwardRounded';
 
 import { api } from '../api';
-import { colors, display } from '../theme';
+import { colors, label, shout } from '../theme';
 import { clock, dayLabel, todayInIndia } from '../format';
+import { SectionTitle } from '../components/ui';
 
-function BookingRow({ booking }) {
+function BookingRow({ booking, index }) {
   const date = dayLabel(booking.startTime);
   const past = booking.startTime.slice(0, 10) < todayInIndia();
   return (
     <Box component={Link} to={`/bookings/${booking.id}`}
       sx={{
-        display: 'flex', alignItems: 'center', gap: { xs: 2, md: 3 }, p: { xs: 2, md: 2.5 }, borderRadius: 3,
-        bgcolor: colors.surface, border: `1px solid ${colors.line}`, opacity: past ? 0.6 : 1,
-        transition: 'border-color .15s ease, transform .15s ease',
-        '&:hover, &:focus-visible': { borderColor: colors.text, bgcolor: colors.accent, transform: 'translateX(4px)' },
+        display: 'grid', alignItems: 'center', columnGap: { xs: 2, md: 4 }, rowGap: 1, py: { xs: 2.5, md: 3 }, px: { xs: 0, md: 1 },
+        gridTemplateColumns: { xs: 'auto 1fr auto', md: '32px auto 1fr auto auto' },
+        borderTop: `1px solid ${colors.text}`, opacity: past ? 0.5 : 1,
+        transition: 'background-color .18s ease, padding .25s cubic-bezier(.2,.7,.2,1)',
+        '& .go': { transition: 'transform .2s ease' },
+        '&:hover, &:focus-visible': { bgcolor: colors.accent, px: { md: 3 }, outline: 'none', opacity: 1 },
+        '&:hover .go, &:focus-visible .go': { transform: 'translate(3px, -3px)' },
       }}>
+      <Box sx={{ ...label, display: { xs: 'none', md: 'block' } }}>{String(index + 1).padStart(2, '0')}</Box>
       <Box sx={{
-        width: 64, flexShrink: 0, textAlign: 'center', py: 1, borderRadius: 2, color: '#fff',
+        width: 62, textAlign: 'center', py: 0.75, borderRadius: 1, color: '#fff', border: `1.5px solid ${colors.text}`,
         background: `linear-gradient(160deg, ${booking.accentColor}, color-mix(in srgb, ${booking.accentColor} 45%, #000))`,
+        transform: 'rotate(-4deg)',
       }}>
-        <Box sx={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', opacity: 0.85 }}>{date.month.toUpperCase()}</Box>
-        <Box sx={{ fontFamily: display, fontWeight: 800, fontSize: 26, lineHeight: 1 }}>{date.day}</Box>
-        <Box sx={{ fontSize: 11, fontWeight: 600, opacity: 0.85 }}>{date.weekday}</Box>
+        <Box sx={{ ...label, fontSize: 10 }}>{date.month}</Box>
+        <Box sx={{ ...shout, fontSize: 28, lineHeight: 1 }}>{date.day}</Box>
+        <Box sx={{ ...label, fontSize: 10 }}>{date.weekday}</Box>
       </Box>
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="h6" noWrap>{booking.movieTitle}</Typography>
-        <Typography variant="body2" color="text.secondary" noWrap>
-          {clock(booking.startTime)} · {booking.theatreName}
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 0.5, fontWeight: 700, color: colors.cobalt }}>
-          {booking.seats.join(', ')}
-          <Box component="span" sx={{ color: colors.muted, fontWeight: 500 }}> · {booking.bookingRef}</Box>
-        </Typography>
+      <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ ...shout, fontSize: 'clamp(24px, 4.2vw, 60px)', textWrap: 'balance' }}>{booking.movieTitle}</Box>
+        <Box sx={{ ...label, color: colors.muted, mt: 0.75 }}>
+          {clock(booking.startTime)} · {booking.theatreName}{past ? ' · Watched' : ''}
+        </Box>
       </Box>
-      <ChevronRightRounded sx={{ color: colors.muted }} />
+      <Box sx={{ textAlign: 'right', display: { xs: 'none', md: 'block' } }}>
+        <Box sx={{ ...shout, fontSize: 24, lineHeight: 1, letterSpacing: '-0.03em' }}>{booking.seats.join('  ')}</Box>
+        <Box sx={{ ...label, color: colors.muted, mt: 0.5 }}>{booking.bookingRef}</Box>
+      </Box>
+      <ArrowOutwardRounded className="go" />
     </Box>
   );
 }
@@ -50,20 +56,20 @@ export default function BookingsPage() {
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ pt: { xs: 3, md: 6 } }}>
-      <Typography variant="h3" sx={{ fontSize: { xs: 28, md: 36 } }}>My bookings</Typography>
+    <Container maxWidth="xl" sx={{ pt: { xs: 2, md: 5 } }}>
+      <SectionTitle bold="My" italic="bookings" size="lg" component="h1" count={bookings ? bookings.length : null} />
       {error && <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>}
 
-      <Box sx={{ mt: 3, display: 'grid', gap: 1.5 }}>
-        {!bookings && !error && [0, 1].map((i) => <Skeleton key={i} variant="rounded" height={104} />)}
-        {bookings && bookings.map((booking) => <BookingRow key={booking.id} booking={booking} />)}
+      <Box sx={{ mt: { xs: 3, md: 6 }, borderBottom: bookings && bookings.length > 0 ? `1px solid ${colors.text}` : 'none' }}>
+        {!bookings && !error && [0, 1].map((i) => <Skeleton key={i} variant="rounded" height={104} sx={{ mb: 1.5 }} />)}
+        {bookings && bookings.map((booking, index) => <BookingRow key={booking.id} booking={booking} index={index} />)}
       </Box>
 
       {bookings && bookings.length === 0 && (
-        <Box sx={{ py: 8, textAlign: 'center', border: `1px dashed ${colors.line}`, borderRadius: 3 }}>
-          <Typography variant="h5">No tickets yet</Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>Your booked tickets will appear here.</Typography>
-          <Button component={Link} to="/" variant="contained" sx={{ mt: 3 }}>Find a movie</Button>
+        <Box sx={{ py: { xs: 5, md: 8 }, borderBlock: `1px solid ${colors.text}` }}>
+          <Box sx={{ ...shout, fontSize: { xs: 32, md: 56 } }}>No tickets yet</Box>
+          <Box sx={{ mt: 1.5, color: colors.muted }}>Your booked tickets will appear here.</Box>
+          <Button component={Link} to="/" variant="contained" size="large" sx={{ mt: 3 }}>Find a movie</Button>
         </Box>
       )}
     </Container>

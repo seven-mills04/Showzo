@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Alert, Box, Button, Container, Skeleton, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Skeleton } from '@mui/material';
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
 import { motion } from 'framer-motion';
 
 import { api } from '../api';
 import { useAuth } from '../context';
-import { colors } from '../theme';
+import { colors, label, shout } from '../theme';
+import { Eyebrow, Spec } from '../components/ui';
 import { clock, dayLabel, rupees } from '../format';
 
 const TIER_NAMES = { CLASSIC: 'Classic', PRIME: 'Prime', RECLINER: 'Recliner' };
@@ -132,23 +133,29 @@ export default function SeatsPage() {
 
   return (
     <Box sx={{ pb: 14 }}>
-      <Container maxWidth="lg" sx={{ pt: { xs: 2.5, md: 4 } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Button component={Link} to={`/movies/${map.movieSlug}`} color="inherit" aria-label="Back to showtimes"
-            sx={{ minWidth: 0, p: 1, border: `1px solid ${colors.line}` }}>
-            <ArrowBackRounded />
-          </Button>
+      <Container maxWidth="xl" sx={{ pt: { xs: 2, md: 4 } }}>
+        <Box component={Link} to={`/movies/${map.movieSlug}`}
+          sx={{ ...label, display: 'inline-flex', alignItems: 'center', gap: 0.75, borderBottom: `1.5px solid ${colors.text}`, pb: 0.25, '&:hover': { bgcolor: colors.accent } }}>
+          <ArrowBackRounded sx={{ fontSize: 14 }} /> All showtimes
+        </Box>
+        <Box sx={{ mt: 2, display: 'grid', gap: { xs: 2, md: 6 }, alignItems: 'end', gridTemplateColumns: { xs: '1fr', md: '1.4fr 1fr' } }}>
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="h5" noWrap>{map.movieTitle}</Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {map.theatreName} · {map.screenName} · {dayLabel(map.startTime).text}, {clock(map.startTime)} · {map.language} {map.format}
-            </Typography>
+            <Eyebrow>Choose your seats</Eyebrow>
+            <Box component="h1" sx={{ ...shout, m: 0, mt: 1, fontSize: 'clamp(36px, 6.4vw, 104px)', lineHeight: 0.88, textWrap: 'balance' }}>
+              {map.movieTitle}
+            </Box>
+          </Box>
+          <Box>
+            <Spec name="When" value={`${dayLabel(map.startTime).text} · ${clock(map.startTime)}`} />
+            <Spec name="Where" value={`${map.theatreName} · ${map.screenName}`} />
+            <Spec name="Format" value={`${map.language} · ${map.format}`} />
+            <Box sx={{ borderTop: `1px solid ${colors.text}` }} />
           </Box>
         </Box>
 
         {notice && <Alert severity="warning" sx={{ mt: 2 }} onClose={() => setNotice('')}>{notice}</Alert>}
 
-        <Box sx={{ mt: 4, overflowX: 'auto' }}>
+        <Box sx={{ mt: { xs: 5, md: 8 }, overflowX: 'auto' }}>
           <Box component={motion.div} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             sx={{ width: 'max-content', mx: 'auto', px: 1 }}>
             {rows.map((row, index) => {
@@ -158,10 +165,9 @@ export default function SeatsPage() {
                 <Box key={row.row}>
                   {newTier && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: index === 0 ? 0 : 3, mb: 1.25 }}>
-                      <Typography variant="overline" sx={{ color: colors.text }}>
-                        {TIER_NAMES[row.tier]} <Box component="span" sx={{ color: colors.cobalt }}>{rupees(row.price)}</Box>
-                      </Typography>
-                      <Box sx={{ flex: 1, height: '1px', bgcolor: colors.line }} />
+                      <Box sx={{ ...shout, fontSize: 18, lineHeight: 1, letterSpacing: '-0.03em' }}>{TIER_NAMES[row.tier]}</Box>
+                      <Box sx={{ flex: 1, height: '1px', bgcolor: colors.text }} />
+                      <Box sx={{ ...label }}>{rupees(row.price)}</Box>
                     </Box>
                   )}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: '3px', sm: 0.75 }, mb: { xs: '3px', sm: 0.75 } }}>
@@ -182,9 +188,7 @@ export default function SeatsPage() {
                 borderBottom: `3px solid ${colors.text}`,
                 background: 'linear-gradient(180deg, transparent 0%, rgba(200,255,46,0.55) 100%)',
               }} />
-              <Typography variant="overline" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 1.5 }}>
-                Screen this way
-              </Typography>
+              <Box sx={{ ...label, textAlign: 'center', mt: 1.5 }}>Screen this way</Box>
             </Box>
           </Box>
         </Box>
@@ -196,16 +200,18 @@ export default function SeatsPage() {
         position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 15, borderTop: `1.5px solid ${colors.text}`,
         bgcolor: 'rgba(241,239,232,0.94)', backdropFilter: 'blur(14px)',
       }}>
-        <Container maxWidth="lg" sx={{ py: 1.75, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Container maxWidth="xl" sx={{ py: 1.75, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             {selected.length === 0 ? (
-              <Typography color="text.secondary">Tap seats to select them</Typography>
+              <Box sx={{ ...label, color: colors.muted }}>Tap seats to select them</Box>
             ) : (
               <>
-                <Typography fontWeight={700} noWrap>
-                  {selected.length} {selected.length === 1 ? 'seat' : 'seats'} · {[...selected].sort().join(', ')}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">{rupees(total)} + fees</Typography>
+                <Box sx={{ ...shout, fontSize: { xs: 22, md: 30 }, lineHeight: 1, letterSpacing: '-0.03em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {[...selected].sort().join('  ')}
+                </Box>
+                <Box sx={{ ...label, mt: 0.5 }}>
+                  {selected.length} {selected.length === 1 ? 'seat' : 'seats'} · {rupees(total)} + fees
+                </Box>
               </>
             )}
           </Box>

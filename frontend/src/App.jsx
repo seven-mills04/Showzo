@@ -31,7 +31,7 @@ function Private({ children }) {
 
 export default function App() {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'clip' }}>
       <Header />
       <Box component="main" sx={{ flex: 1 }}>
         <Routes>
